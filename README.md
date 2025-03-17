@@ -18,8 +18,8 @@ docker run -p 8080:8080 marynakovalova/hsa13-hw10-nosql-databases-elasticsearch-
 The web interface will be available at `http://localhost:8080/`.
 
 ### Screenshots
-- [Screenshot 1](screenshoots/Screenshot1.png)
-- [Screenshot 2](screenshoots/Screenshot2.png)
+![Screenshot 1](screenshoots/Screenshot1.png)
+![Screenshot 2](screenshoots/Screenshot2.png)
 
 ### Description
 
