@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Autocomplete Demo</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+    }
+    .autocomplete-container {
+      position: relative;
+      width: 250px;
+      margin: 25px;
+    }
+    #search-input {
+      width: 100%;
+      padding: 8px;
+      box-sizing: border-box;
+    }
+    #suggestions {
+      position: absolute;
+      top: 55px; /* трохи нижче за поле */
+      left: 0;
+      right: 0;
+      background: #fff;
+      border: 1px solid #ccc;
+      z-index: 999;
+      display: none; /* за замовчуванням приховано */
+      max-height: 200px; /* обмежена висота */
+      overflow-y: auto;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+    }
+    .suggestion-item {
+      padding: 8px;
+      cursor: pointer;
+    }
+    .suggestion-item:hover {
+      background-color: #f2f2f2;
+    }
+  </style>
+</head>
+<body>
+
+<div class="autocomplete-container">
+  <label for="search-input">Elasticsearch:</label><br>
+  <input
+      type="text"
+      id="search-input"
+      placeholder="Type something..."
+      oninput="performSearch()"
+  />
+
+  <div id="suggestions"></div>
+</div>
+
+<script>
+  async function performSearch() {
+    const query = document.getElementById('search-input').value.trim();
+
+    if (!query) {
+      hideSuggestions();
+      return;
+    }
+
+    const url = `/search?query=${encodeURIComponent(query)}&size=15`;
+
+    try {
+      const response = await fetch(url);
+      const data = await response.json();
+
+      if (!data || !data.length) {
+        hideSuggestions();
+        return;
+      }
+
+      showSuggestions(data);
+    } catch (error) {
+      console.error('Error fetching suggestions:', error);
+      hideSuggestions();
+    }
+  }
+
+  function showSuggestions(suggestions) {
+    const suggestionsDiv = document.getElementById('suggestions');
+
+    // генеруємо HTML-рядок
+    const itemsHtml = suggestions.map(item =>
+        `<div class="suggestion-item" onclick="selectSuggestion('${item}')">${item}</div>`
+    ).join('');
+
+    suggestionsDiv.innerHTML = itemsHtml;
+    suggestionsDiv.style.display = 'block';
+  }
+
+  function hideSuggestions() {
+    const suggestionsDiv = document.getElementById('suggestions');
+    suggestionsDiv.style.display = 'none';
+  }
+
+  function selectSuggestion(value) {
+    // Користувач клацнув на варіант
+    document.getElementById('search-input').value = value;
+    hideSuggestions();
+  }
+</script>
+
+</body>
+</html>
